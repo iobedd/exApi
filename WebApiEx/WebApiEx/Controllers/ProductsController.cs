@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiEx.Models;
 
@@ -16,8 +16,7 @@ namespace WebApiEx.Controllers
                 Name = "Prod 1",
                 Description = " New prod 1 ",
                 Ratings = [1,2,3 ],
-                
-                CreatedOn = DateTime.UtcNow,
+                CreatedOn = DateTime.UtcNow
             },
             new Products
             {
@@ -25,7 +24,7 @@ namespace WebApiEx.Controllers
                 Name = "Prod 2",
                 Description = " New prod 2 ",
                 Ratings = [1,1,1 ],
-                CreatedOn = DateTime.UtcNow,
+                CreatedOn = DateTime.UtcNow
             }
         };
 
@@ -42,17 +41,17 @@ namespace WebApiEx.Controllers
             foreach (var existingProducts in _products)
             {
                 if (keyword.Equals(existingProducts.Name) || keyword.Equals(existingProducts.Description) || keyword.Equals(existingProducts.Id) || keyword.Equals(existingProducts.CreatedOn))
-                { keywordsList.Add(existingProducts);
+                {
+                    keywordsList.Add(existingProducts);
                 }
-
                 else
                 {
                     int ok = 0;
                     bool successfullParse = int.TryParse(keyword, out ok);
                     if (successfullParse == true)
                     {
-                     if( existingProducts.Ratings.Contains(int.Parse(keyword)))
-                          keywordsList.Add(existingProducts);
+                        if (existingProducts.Ratings.Contains(int.Parse(keyword)))
+                            keywordsList.Add(existingProducts);
 
                     }
 
@@ -65,39 +64,25 @@ namespace WebApiEx.Controllers
         public List<Products> GetProductsRatingAsc()
         {
             List<Products> orderedlist = _products;
-            int avr = 0, count = 0;
-            int avr2 = 0, count2 = 0;
-            foreach (var existingProducts in orderedlist)
+            int avr = 0;
+            int avr2 = 0;
+            for (int i = 0; i < orderedlist.Count - 1; i++)
             {
-
-                for (int i = 0; i < orderedlist.Count; i++)
+                avr = orderedlist[i].Ratings.Sum() / orderedlist[i].Ratings.Length;
+                for (int j = i + 1; j < orderedlist.Count; j++)
                 {
-                    for (int k = 0; k < existingProducts.Ratings.Length; k++)
-                    {
-                        avr = avr + existingProducts.Ratings[k];
-                        count++;
-                    }
-                    avr = avr / count;
+                    avr2 = orderedlist[j].Ratings.Sum() / orderedlist[j].Ratings.Length;
 
-                    for (int j = 0; j < orderedlist.Count; j++)
+
+                    if (avr2 < avr)
                     {
-                        for (int l = 0; l < existingProducts.Ratings.Length; l++)
-                        {
-                            avr2 = avr2 + existingProducts.Ratings[l];
-                            count2++;
-                        }
-                        avr2 = avr2 / count2;
-                        if (avr > avr2)
-                        {
-                            Products temp = orderedlist[i];
-                            orderedlist[i] = orderedlist[j];
-                            orderedlist[j] = temp;
-                        }
-                        avr2 = 0; count2 = 0;
+                        Products temp = orderedlist[i];
+                        orderedlist[i] = orderedlist[j];
+                        orderedlist[j] = temp;
                     }
-                    avr = 0; count = 0;
+                    avr2 = 0;
                 }
-
+                avr = 0;
             }
             return orderedlist;
         }
@@ -106,44 +91,26 @@ namespace WebApiEx.Controllers
         public List<Products> GetProductsRatingDesc()
         {
             List<Products> orderedlist = _products;
-            int avr = 0, count = 0;
-            int avr2 = 0, count2 = 0;
-            //int avrr=0, avre=0;
-            foreach (var existingProducts in orderedlist)
+            int avr = 0;
+            int avr2 = 0;
+
+            for (int i = 0; i < orderedlist.Count - 1; i++)
             {
+                avr = orderedlist[i].Ratings.Sum() / orderedlist[i].Ratings.Length;
 
-                for (int i = 0; i < orderedlist.Count; i++)
+                for (int j = i + 1; j < orderedlist.Count; j++)
                 {
-                    
-                    for (int k = 0; k <= existingProducts.Ratings.Length; k++)
+                    avr2 = orderedlist[j].Ratings.Sum() / orderedlist[j].Ratings.Length;
+
+                    if (avr2 > avr)
                     {
-                        avr = avr + existingProducts.Ratings[k];
-                        count++;
+                        Products temp = orderedlist[i];
+                        orderedlist[i] = orderedlist[j];
+                        orderedlist[j] = temp;
                     }
-                    avr = avr / count;
-
-                    for (int j = 0 ; j < orderedlist.Count; j++)
-                    {
-                        for (int l = 0; l < existingProducts.Ratings.Length; l++)
-                        {
-                            avr2 = avr2 + existingProducts.Ratings[l];
-                            count2++;
-                        }
-                        avr2 = avr2 / count2;
-                       
-
-
-                        if (avr2 > avr)
-                        {
-                            Products temp = orderedlist[i];
-                            orderedlist[i] = orderedlist[j];
-                            orderedlist[j] = temp;
-                        }
-                        avr2 = 0; count2 = 0;
-                    }
-                    avr = 0; count = 0;
+                    avr2 = 0;
                 }
-
+                avr = 0;
             }
             return orderedlist;
         }
@@ -166,7 +133,6 @@ namespace WebApiEx.Controllers
                     oldest.Add(existingProduct);
             }
             return oldest;
-
         }
 
         [HttpGet("get-newest-product")]
@@ -197,7 +163,6 @@ namespace WebApiEx.Controllers
                     newest.Add(existingProduct);
             }
             return newest;
-
         }
 
         [HttpPost]
@@ -221,7 +186,6 @@ namespace WebApiEx.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteProduct(Guid id)
         {
-
             foreach (var existingProduct in _products)
             {
                 if (existingProduct.Id == id)
@@ -236,7 +200,6 @@ namespace WebApiEx.Controllers
         [HttpPut("change-name/{productId}")]
         public IActionResult ChangeName(Guid productId, [FromBody] string name)
         {
-
             foreach (var existingProduct in _products)
             {
                 if (existingProduct.Id == productId)
@@ -247,7 +210,6 @@ namespace WebApiEx.Controllers
             }
             return NotFound("Product not found!");
         }
-
-
     }
 }
+
