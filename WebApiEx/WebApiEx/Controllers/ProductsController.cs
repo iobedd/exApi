@@ -61,57 +61,80 @@ namespace WebApiEx.Controllers
         }
 
         [HttpGet("get-products-rating-asc")]
-        public List<Products> GetProductsRatingAsc()
-        {
-            List<Products> orderedlist = _products;
-            int avr = 0;
-            int avr2 = 0;
-            for (int i = 0; i < orderedlist.Count - 1; i++)
-            {
-                avr = orderedlist[i].Ratings.Sum() / orderedlist[i].Ratings.Length;
-                for (int j = i + 1; j < orderedlist.Count; j++)
-                {
-                    avr2 = orderedlist[j].Ratings.Sum() / orderedlist[j].Ratings.Length;
-
-
-                    if (avr2 < avr)
-                    {
-                        Products temp = orderedlist[i];
-                        orderedlist[i] = orderedlist[j];
-                        orderedlist[j] = temp;
-                    }
-                    avr2 = 0;
-                }
-                avr = 0;
-            }
-            return orderedlist;
-        }
+         public List<Products> GetProductsRatingAsc()
+         {
+             List<Products> orderedlist = _products;
+             int avr = 0, count = 0;
+             int avr2 = 0, count2 = 0;
+             //int avrr=0, avre=0;
+             for (int i = 0; i < orderedlist.Count; i++)
+             {
+        
+                 for (int k = 0; k < orderedlist[i].Ratings.Length; k++)
+                 {
+                     avr = avr + orderedlist[i].Ratings[k];
+                     count++;
+                 }
+                 avr = avr / count;
+        
+                 for (int j = 0; j < orderedlist.Count; j++)
+                 {
+                     for (int l = 0; l < orderedlist[j].Ratings.Length; l++)
+                     {
+                         avr2 = avr2 + orderedlist[j].Ratings[l];
+                         count2++;
+                     }
+                     avr2 = avr2 / count2;
+        
+                     if (avr2 > avr)
+                     {
+                         Products temp = orderedlist[i];
+                         orderedlist[i] = orderedlist[j];
+                         orderedlist[j] = temp;
+                     }
+                     avr2 = 0; count2 = 0;
+                 }
+                 avr = 0; count = 0;
+             }
+             return orderedlist;
+         }
 
         [HttpGet("get-products-rating-desc")]
         public List<Products> GetProductsRatingDesc()
         {
             List<Products> orderedlist = _products;
-            int avr = 0;
-            int avr2 = 0;
-
-            for (int i = 0; i < orderedlist.Count - 1; i++)
-            {
-                avr = orderedlist[i].Ratings.Sum() / orderedlist[i].Ratings.Length;
-
-                for (int j = i + 1; j < orderedlist.Count; j++)
+            int avr = 0, count = 0;
+            int avr2 = 0, count2 = 0;
+            
+                for (int i = 0; i < orderedlist.Count; i++)
                 {
-                    avr2 = orderedlist[j].Ratings.Sum() / orderedlist[j].Ratings.Length;
-
-                    if (avr2 > avr)
+                    
+                    for (int k = 0; k < orderedlist[i].Ratings.Length; k++)
                     {
-                        Products temp = orderedlist[i];
-                        orderedlist[i] = orderedlist[j];
-                        orderedlist[j] = temp;
+                        avr = avr + orderedlist[i].Ratings[k];
+                        count++;
                     }
-                    avr2 = 0;
+                    avr = avr / count;
+        
+                    for (int j = 0 ; j < orderedlist.Count; j++)
+                    {
+                        for (int l = 0; l < orderedlist[j].Ratings.Length; l++)
+                        {
+                            avr2 = avr2 + orderedlist[j].Ratings[l];
+                            count2++;
+                        }
+                        avr2 = avr2 / count2;
+                       
+                        if (avr2 < avr)
+                        {
+                            Products temp = orderedlist[i];
+                            orderedlist[i] = orderedlist[j];
+                            orderedlist[j] = temp;
+                        }
+                        avr2 = 0; count2 = 0;
+                    }
+                    avr = 0; count = 0;
                 }
-                avr = 0;
-            }
             return orderedlist;
         }
 
